@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import os.path
 import torch
+import sys
 
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',
@@ -122,8 +123,11 @@ class ImageFolder_spandan(data.Dataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
         name = path.split('/')[-1]
-        label = image_name_to_label_vector[name]
-        return img,label
-        
+        try:
+            label = image_name_to_label_vector[name]
+            return img,label
+        except:
+            return None  # One possibility
+               
     def __len__(self):
         return len(self.imgs)
