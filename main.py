@@ -60,7 +60,7 @@ if torch.cuda.is_available() and not opt.cuda:
 
 if opt.dataset in ['imagenet', 'folder', 'lfw']:
     # folder dataset
-    dataset = dset.ImageFolder_spandan(root=opt.dataroot,
+    dataset = ImageFolder_spandan(root=opt.dataroot,
                                transform=transforms.Compose([
                                    transforms.Scale(opt.imageSize),
                                    transforms.CenterCrop(opt.imageSize),
