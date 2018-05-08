@@ -12,6 +12,9 @@ import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from torch.autograd import Variable
+from torchvision import datasets, models, transforms
+import matplotlib.pyplot as plt
+from ImageFolder_new import ImageFolder_spandan
 
 
 parser = argparse.ArgumentParser()
@@ -57,7 +60,7 @@ if torch.cuda.is_available() and not opt.cuda:
 
 if opt.dataset in ['imagenet', 'folder', 'lfw']:
     # folder dataset
-    dataset = dset.ImageFolder(root=opt.dataroot,
+    dataset = dset.ImageFolder_spandan(root=opt.dataroot,
                                transform=transforms.Compose([
                                    transforms.Scale(opt.imageSize),
                                    transforms.CenterCrop(opt.imageSize),
