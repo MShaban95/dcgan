@@ -15,7 +15,7 @@ from torch.autograd import Variable
 from torchvision import datasets, models, transforms
 import matplotlib.pyplot as plt
 from ImageFolder_new import ImageFolder_spandan
-
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True, help='cifar10 | lsun | imagenet | folder | lfw | fake')
@@ -192,7 +192,7 @@ criterion = nn.BCELoss()
 
 input = torch.FloatTensor(opt.batchSize, 3, opt.imageSize, opt.imageSize)
 noise = torch.FloatTensor(opt.batchSize, nz, 1, 1)
-fixed_noise = torch.FloatTensor(opt.batchSize, nz, 1, 1).normal_(0, 1)
+fixed_noise = torch.FloatTensor(opt.batchSize, nz+72, 1, 1).normal_(0, 1)
 # Save fixed latent Z vector
 torch.save(fixed_noise, '%s/fixed_noise.pth' % (opt.outf))
 
@@ -220,7 +220,7 @@ for epoch in range(opt.niter):
         ###########################
         # train with real
         netD.zero_grad()
-        real_cpu, _ = data
+        real_cpu, attributes = data
         batch_size = real_cpu.size(0)
         if opt.cuda:
             real_cpu = real_cpu.cuda()
@@ -236,7 +236,10 @@ for epoch in range(opt.niter):
 
         # train with fake
         noise.resize_(batch_size, nz, 1, 1).normal_(0, 1)
-        noisev = Variable(noise)
+        attr = torch.from_numpy(attributes)
+        noiseattr = [noise, attr]
+        noisei = torch.cat(noiseattr, 1)
+        noisev = Variable(noisei)
         fake = netG(noisev)
         labelv = Variable(label.fill_(fake_label))
         output = netD(fake.detach())
